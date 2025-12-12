@@ -6,13 +6,13 @@
   cd spacecontrol
   ```
 2. Setup the environment:
-  The code has been test with **CUDA 12.8** (see output of `nvcc --version`) on an NVIDIA 3090 with `torch 2.8.0+cu128`
+  The code has been test with **CUDA 12.8** (see `nvcc --version`) on an NVIDIA 3090 with `torch 2.8.0+cu128`
 
   ```sh
   conda create -n spacecontrol python=3.10 -y
   conda activate spacecontrol
   
-  # installation instructions for your setup: https://pytorch.org/get-started/locally/
+  # instructions for your setup: https://pytorch.org/get-started/locally/
   pip install torch==2.8.0 torchvision==0.23.0 torchaudio==2.8.0 --index-url https://download.pytorch.org/whl/cu128
 
   pip install pillow imageio imageio-ffmpeg tqdm easydict opencv-python-headless scipy ninja rembg onnxruntime trimesh open3d xatlas pyvista pymeshfix igraph transformers psutil
@@ -22,7 +22,7 @@
   pip install xformers==0.0.32.post1 --index-url https://download.pytorch.org/whl/cu128
   pip install flash-attn --no-build-isolation
   pip install kaolin==0.18.0pip https://nvidia-kaolin.s3.us-east-2.amazonaws.com/torch-2.8.0_cu128.html
-  pip install spconv
+  pip install spconv-cu120
   pip install gradio==4.44.1 gradio_litmodel3d==0.0.1
 
   mkdir -p /tmp/extensions

@@ -262,7 +262,6 @@ def setup_gui(server, superquadrics: dict) -> None:
         gui_elements_per_sq['scale_x'] = server.gui.add_slider(f"Scale X", min=0, max=1, step=0.002, initial_value=superquadric['scale'][0], marks=((0, "0"), (1, "1"), (2, "2")),)
         gui_elements_per_sq['scale_y'] = server.gui.add_slider(f"Scale Y", min=0, max=1, step=0.002, initial_value=superquadric['scale'][1], marks=((0, "0"), (1, "1"), (2, "2")),)
         gui_elements_per_sq['scale_z'] = server.gui.add_slider(f"Scale Z", min=0, max=1, step=0.002, initial_value=superquadric['scale'][2], marks=((0, "0"), (1, "1"), (2, "2")),)
-        gui_elements_per_sq['prompt'] = server.gui.add_text("Text prompt", "chair")
 
         for k in gui_elements_per_sq.keys():
           try:
@@ -347,7 +346,6 @@ def update_sq(superquadrics, superquadric_id, resolution) -> None:
   superquadrics[superquadric_id]['scale'][0] = gui_elements[f'sq_{superquadric_id}']['scale_x'].value
   superquadrics[superquadric_id]['scale'][1] = gui_elements[f'sq_{superquadric_id}']['scale_y'].value
   superquadrics[superquadric_id]['scale'][2] = gui_elements[f'sq_{superquadric_id}']['scale_z'].value
-  superquadrics[superquadric_id]['prompt'] = gui_elements[f'sq_{superquadric_id}']['prompt'].value
   add_superquadric(superquadrics, superquadric_id, gui_elements, resolution)
 
 

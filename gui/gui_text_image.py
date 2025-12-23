@@ -215,8 +215,8 @@ def generate(superquadrics, text_prompt_handle, t0_idx, image_control=False) -> 
   gui_elements[f'generate_button{suffix_cur}'].color = 'green'
 
 
-def get_all_templates() -> list:
-  return sorted([f.split('_')[0] for f in os.listdir('gui/superquadrics/') if f.endswith('_sq.npz')])
+def get_all_templates() -> dict:
+  return {i: f.split('_')[0] for i, f in enumerate(sorted(os.listdir('gui/superquadrics/'))) if f.endswith('_sq.npz')}
 
 
 def handle_upload_image(event):
@@ -248,9 +248,11 @@ def setup_gui(server, superquadrics: dict) -> None:
   global image_prompt_handle 
   
   select_template_dropdown = server.gui.add_dropdown(label="Object Template",
-                          options=[str(i) for i in range(len(get_all_templates()))],
-                          order=0, initial_value=str(active_template_id))
-  select_template_dropdown.on_update(lambda _: select_template(int(select_template_dropdown.value)))
+                          # options=[str(i) for i in range(len(get_all_templates()))],
+                          options=get_all_templates().values(),
+                          order=0, initial_value=get_all_templates()[active_template_id])
+  select_template_dropdown.on_update(lambda _: select_template_from_id([key for key, val in get_all_templates().items() if val == select_template_dropdown.value][0]))
+  gui_elements['select_template_dropdown'] = select_template_dropdown
 
   for id, superquadric in superquadrics.items():
       gui_elements_per_sq = {}
@@ -277,8 +279,12 @@ def setup_gui(server, superquadrics: dict) -> None:
   gui_elements['generate_button'] = server.gui.add_button("Generate", color='green', icon=viser.Icon.PLAYER_PLAY, order=5)
   gui_elements['generate_button'].on_click(lambda _: generate(superquadrics, text_prompt, t0_idx))
 
-  gui_elements['save_sq_button'] = server.gui.add_button("Save Template", color='gray', icon=viser.Icon.PLAYER_PLAY, order=1)
-  gui_elements['save_sq_button'].on_click(lambda _: save_superquadric_to_file(superquadrics, f'gui/superquadrics/{len(get_all_templates())}_sq.npz'))
+  gui_elements['save_sq_button'] = server.gui.add_button("Save as Template", color='gray', icon=viser.Icon.WRITING, order=0)
+  gui_elements['save_sq_button'].on_click(
+     lambda _: save_superquadric_to_file(
+        superquadrics, f'gui/superquadrics/{text_prompt.value}_sq.npz',
+        )
+     )
 
   server.gui.add_folder("", expand_by_default=False, order=6)
 
@@ -286,7 +292,7 @@ def setup_gui(server, superquadrics: dict) -> None:
   with gui_elements['folder_image_conditioning']:
     image_prompt_handle = server.gui.add_upload_button("Select image prompt", color = 'gray', order=10)
     image_prompt_handle.on_upload(handle_upload_image)
-    gui_elements['generate_button_with_image'] = server.gui.add_button("Generate with image", disabled = True, color='green', icon=viser.Icon.PLAYER_PLAY, order = 12)
+    gui_elements['generate_button_with_image'] = server.gui.add_button("Apply Texture", disabled = True, color='green', icon=viser.Icon.PLAYER_PLAY, order = 12)
     gui_elements['generate_button_with_image'].on_click(lambda _: generate(superquadrics, text_prompt, t0_idx, True))
   toggle_button = server.gui.add_button("Toggle", color='gray', order = 100)
   toggle_button.on_click(lambda _: toggle_sq_mesh())
@@ -443,8 +449,14 @@ def save_superquadric_to_file(superquadrics: dict, file_path: str) -> None:
            rotations=np.array(rotations),
            shapes=np.array(shapes),
            translations=np.array(translations))
+  server.add_notification(
+            title="Persistent notification",
+            body="This can be closed manually and does not disappear on its own!",
+            with_close_button=True,
+        )
 
-def select_template(template_id: int) -> None:
+
+def select_template_from_id(template_id: int) -> None:
   global active_template_id
   global superquadrics
   active_template_id = template_id
@@ -457,8 +469,9 @@ def select_template(template_id: int) -> None:
     add_superquadric(superquadrics, superquadric_id, gui_elements, resolution=RESOLUTION)
 
 
+
 def main():
-  select_template(0)
+  select_template_from_id(0)
   while True:
       time.sleep(10.0)
 

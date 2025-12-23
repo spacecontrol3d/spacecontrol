@@ -19,7 +19,7 @@
 </p>
 <p align="center">
 <a href="">
-<img src="https://spacecontrol3d.github.io/images/teaser_2.jpg" alt="Logo" width="100%">
+<img src="https://spacecontrol3d.github.io/images/teaser.png" alt="Logo" width="100%">
 </a>
 </p>
 
